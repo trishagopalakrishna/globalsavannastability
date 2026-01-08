@@ -75,25 +75,19 @@ mapping_function <- function (bounding_box){
 }
 
 # bounding box defined 
-global_tropics <-  st_bbox(c( xmin =  176.1, xmax = -178.9, 
+global_tropics <-  st_bbox(c(xmin = 176.1, xmax = -178.9, 
                                ymax = 26.7, ymin = -64.9 ), 
                             crs = st_crs("EPSG:4326"))
 
-australasia_indomalayan <- st_bbox(c( xmin =  61.3, xmax = 160.5, 
-                                       ymax = 37.7, ymin = -46.4), 
-                                    crs = st_crs("EPSG:4326"))
-tropical_africa <- st_bbox( c( xmin =  -13626971, xmax = -13582988, 
-                                       ymax = 6078671, ymin = 5955885 ), 
-                                    crs = st_crs("+init=epsg:3395"))
-tropical_latin_america <- st_bbox( c( xmin =  -13626971, xmax = -13582988, 
-                                       ymax = 6078671, ymin = 5955885 ), 
-                                    crs = st_crs("+init=epsg:3395"))
+ssea <- st_bbox(c( xmin = 61.3, xmax = 160.5, 
+                                ymax = -17.6, ymin = 33.9), 
+                                crs = st_crs("EPSG:4326"))
 
 
 map_global_tropical_savannas <- mapping_function(global_tropics)
 tmap_save(map_global_tropical_savannas, here("Outputs", "studyarea_delineation", "global_tropical_savannas.png"),
           width = 1920, height = 1080)
 
-map_australasia_indomalaya_savannas <- mapping_function(australasia_indomalayan)
-tmap_save(map_australasia_indomalaya_savannas, here("Outputs", "studyarea_delineation", "ssea_tropical_savannas.png"),
+map_sseas <- mapping_function(ssea)
+tmap_save(map_sseas, here("Outputs", "studyarea_delineation", "ssea_tropical_savannas.png"),
           width = 800, height = 800)
