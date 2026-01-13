@@ -61,38 +61,9 @@ remove(n_olson, n_dinnerstein, not_in_dinnerstein, not_in_olson)
 gc()
 remove(global_dinnerstein, global_olson, join_realms_olson, realms_dinnerstein, realms_olson)
 
-##################################################### 4. Maps to share
+##################################################### 4. Simplification of features
 global_tropical_savanna_extent <- st_read(here("Outputs", "studyarea_delineation", "ecoregion_wise_delineation", "tropical_savanna_extent.shp"))
 
-country_shp<- st_read(here("Data", "studyarea_delineation","ne_10m_admin_0_countries", "ne_10m_admin_0_countries.shp"))
-country_shp <- country_shp %>% filter(NAME != "Antarctica")
-
-mapping_function <- function (bounding_box){
-  x_map<- tm_shape(country_shp, bbox = bounding_box)+ tm_borders() +
-    tm_shape (global_tropical_savanna_extent)  + tm_fill(fill ="#339966", fill_alpha =0.6)+
-    tm_layout(frame = FALSE)
-  x_map
-}
-
-# bounding box defined 
-global_tropics <-  st_bbox(c(xmin = 176.1, xmax = -178.9, 
-                               ymax = 26.7, ymin = -64.9 ), 
-                            crs = st_crs("EPSG:4326"))
-
-ssea <- st_bbox(c( xmin = 61.3, xmax = 160.5, 
-                                ymax = -17.6, ymin = 33.9), 
-                                crs = st_crs("EPSG:4326"))
-
-
-map_global_tropical_savannas <- mapping_function(global_tropics)
-tmap_save(map_global_tropical_savannas, here("Outputs", "studyarea_delineation", "ecoregion_wise_delineation", "global_tropical_savannas.png"),
-          width = 1920, height = 1080)
-
-map_sseas <- mapping_function(ssea)
-tmap_save(map_sseas, here("Outputs", "studyarea_delineation", "ecoregion_wise_delineation", "ssea_tropical_savannas.png"),
-          width = 800, height = 800)
-
-##################################################### 5. Simplification of features
 unlist(lapply(1:nrow(global_tropical_savanna_extent), \(i) nrow(st_coordinates(global_tropical_savanna_extent[i,]))))
 # above shp has >1000000 vertices and hence cannot be ingested as a GEE asset
 
@@ -106,3 +77,32 @@ st_write(x, here("Scratch", "x.shp")) #temp file
 # simplification method was Distance (Douglas- Peucker) and Tolerance set was 1.
 # The output from this step was ingested into GEE
 
+
+##################################################### 5. Maps to share
+country_shp<- st_read(here("Data", "studyarea_delineation","ne_10m_admin_0_countries", "ne_10m_admin_0_countries.shp"))
+country_shp <- country_shp %>% filter(NAME != "Antarctica")
+
+mapping_function <- function (bounding_box){
+  x_map<- tm_shape(country_shp, bbox = bounding_box)+ tm_borders() +
+    tm_shape (global_tropical_savanna_extent)  + tm_fill(fill ="#339966", fill_alpha =0.6)+
+    tm_layout(frame = FALSE)
+  x_map
+}
+
+# bounding box defined 
+global_tropics <-  st_bbox(c(xmin = 176.1, xmax = -178.9, 
+                             ymax = 26.7, ymin = -64.9 ), 
+                           crs = st_crs("EPSG:4326"))
+
+ssea <- st_bbox(c( xmin = 61.3, xmax = 160.5, 
+                   ymax = -17.6, ymin = 33.9), 
+                crs = st_crs("EPSG:4326"))
+
+
+map_global_tropical_savannas <- mapping_function(global_tropics)
+tmap_save(map_global_tropical_savannas, here("Outputs", "studyarea_delineation", "ecoregion_wise_delineation", "global_tropical_savannas.png"),
+          width = 1920, height = 1080)
+
+map_sseas <- mapping_function(ssea)
+tmap_save(map_sseas, here("Outputs", "studyarea_delineation", "ecoregion_wise_delineation", "ssea_tropical_savannas.png"),
+          width = 800, height = 800)
