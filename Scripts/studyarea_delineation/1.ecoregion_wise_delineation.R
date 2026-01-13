@@ -91,3 +91,18 @@ tmap_save(map_global_tropical_savannas, here("Outputs", "studyarea_delineation",
 map_sseas <- mapping_function(ssea)
 tmap_save(map_sseas, here("Outputs", "studyarea_delineation", "ecoregion_wise_delineation", "ssea_tropical_savannas.png"),
           width = 800, height = 800)
+
+##################################################### 5. Simplification of features
+unlist(lapply(1:nrow(global_tropical_savanna_extent), \(i) nrow(st_coordinates(global_tropical_savanna_extent[i,]))))
+# above shp has >1000000 vertices and hence cannot be ingested as a GEE asset
+
+x<-st_simplify(global_tropical_savanna_extent)
+unlist(lapply(1:nrow(x), \(i) nrow(st_coordinates(x[i,])))) 
+# still too  many vertices
+st_write(x, here("Scratch", "x.shp")) #temp file
+
+# The temp file created above was input into QGIS in where I further simplified
+# features using Vector Geometry > Simplify. I retained default settings i.e.
+# simplification method was Distance (Douglas- Peucker) and Tolerance set was 1.
+# The output from this step was ingested into GEE
+
